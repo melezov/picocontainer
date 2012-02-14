@@ -1,6 +1,7 @@
 package org.picocontainer.containers;
 
 import org.junit.Test;
+import org.picocontainer.DefaultPicoContainer;
 import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.annotations.Bind;
 import org.picocontainer.injectors.AbstractInjector;
@@ -19,7 +20,7 @@ import static org.junit.Assert.fail;
 import static org.picocontainer.Key.annotatedKey;
 
 public class TieringPicoContainerTestCase {
-    
+
     public static class Couch {
     }
 
@@ -182,7 +183,20 @@ public class TieringPicoContainerTestCase {
         assertEquals("child:1<I<parent:1<|", child.toString());
     }
 
+    public static class A { public A(B b) { this.b = b; } public B b; }
+    public static class B { public B(String name) { this.name = name; } public String name; }
 
+    @Test public void testScopeResolution() {
 
+    	DefaultPicoContainer container = new DefaultPicoContainer();
+    	container.addComponent(A.class);
+    	container.addComponent(new B("root"));
+    	
+    	MutablePicoContainer scope = container.makeChildContainer();
+    	scope.addComponent(new B("child"));
+    	
+    	A a = scope.getComponent(A.class);
 
+    	assertEquals("child", a.b.name);
+    }
 }

@@ -204,15 +204,30 @@ public class TieringPicoContainerTestCase {
     public static class C1 implements I1 {}
     public static interface I2 extends I1 {}
     public static class C2 extends C1 implements I1 {}
+    public static class C3 {
+        public C3(I1 i1) {}
+      }
 
-    @Test public void testAmbigousInterfaceResolution() {
+      @Test public void testAmbigousInterfaceResolution() {
 
-    	DefaultPicoContainer container = new DefaultPicoContainer();
-    	container.addComponent(C1.class);
-    	container.addComponent(C2.class);
+      	DefaultPicoContainer container = new DefaultPicoContainer();
+      	container.addComponent(C1.class);
+      	container.addComponent(C2.class);
 
-    	I1 i = container.getComponent(I1.class);
+      	I1 i = container.getComponent(I1.class);
 
-    	assertEquals(C2.class, i.getClass());
-    }
+      	assertEquals(C2.class, i.getClass());
+      }
+
+      @Test public void testAmbigousConstructorResolution() {
+
+      	DefaultPicoContainer container = new DefaultPicoContainer();
+      	container.addComponent(C1.class);
+      	container.addComponent(C2.class);
+      	container.addComponent(C3.class);
+
+      	C3 c3 = container.getComponent(C3.class);
+
+      	assertEquals(C3.class, c3.getClass());
+      }
 }

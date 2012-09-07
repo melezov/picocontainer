@@ -78,7 +78,7 @@ public class BasicComponentParameter extends AbstractParameter implements Parame
                             final ComponentAdapter<?> forAdapter,
                             final ComponentAdapter<?> injecteeAdapter, final Type expectedType,
                             NameBinding expectedNameBinding, boolean useNames, Annotation binding) {
-    	
+
     	Generic<?> resolvedClassType = null;
         // TODO take this out for Pico3
         if (notAClass(expectedType) && notAJsr330Provider(expectedType)) {
@@ -226,7 +226,9 @@ public class BasicComponentParameter extends AbstractParameter implements Parame
                 } else if (found.size() == 1) {
                     result = found.get(0);
                 } else {
-                    throw tooManyMatchingAdaptersFound(expectedType, found);
+                    result = found.get(found.size() - 1);
+                    //TODO return last component that satisfy requirements
+                    //throw tooManyMatchingAdaptersFound(expectedType, found);
                 }
             }
         }

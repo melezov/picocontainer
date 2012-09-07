@@ -429,12 +429,15 @@ public class DefaultPicoContainer implements MutablePicoContainer, Converting, C
                     }
                 }
             }
+            //return last registered component
+            return found.get(found.size() - 1);
+/*
             Class<?>[] foundClasses = new Class[found.size()];
             for (int i = 0; i < foundClasses.length; i++) {
                 foundClasses[i] = found.get(i).getComponentImplementation();
             }
 
-            throw new AbstractInjector.AmbiguousComponentResolutionException(componentType, foundClasses);
+            throw new AbstractInjector.AmbiguousComponentResolutionException(componentType, foundClasses);*/
         }
     }
 

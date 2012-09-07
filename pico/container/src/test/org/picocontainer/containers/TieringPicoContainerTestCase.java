@@ -191,12 +191,28 @@ public class TieringPicoContainerTestCase {
     	DefaultPicoContainer container = new DefaultPicoContainer();
     	container.addComponent(A.class);
     	container.addComponent(new B("root"));
-    	
+
     	MutablePicoContainer scope = container.makeChildContainer();
     	scope.addComponent(new B("child"));
-    	
+
     	A a = scope.getComponent(A.class);
 
     	assertEquals("child", a.b.name);
+    }
+
+    public static interface I1 {}
+    public static class C1 implements I1 {}
+    public static interface I2 extends I1 {}
+    public static class C2 extends C1 implements I1 {}
+
+    @Test public void testAmbigousInterfaceResolution() {
+
+    	DefaultPicoContainer container = new DefaultPicoContainer();
+    	container.addComponent(C1.class);
+    	container.addComponent(C2.class);
+
+    	I1 i = container.getComponent(I1.class);
+
+    	assertEquals(C2.class, i.getClass());
     }
 }

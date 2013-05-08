@@ -703,18 +703,17 @@ public class DefaultPicoContainer implements MutablePicoContainer, Converting, C
         return getComponents(Object.class);
     }
 
-    public <T> List<T> getComponents(final Class<T> componentType) {
-        if (componentType == null) {
-            return Collections.emptyList();
-        }
-
-        Map<ComponentAdapter<T>, T> adapterToInstanceMap = new HashMap<ComponentAdapter<T>, T>();
-        List<T> result = new ArrayList<T>();
+    private <T> void getLocalComponents(
+    		final Class<T> componentType, 
+            final ArrayList<T> result,
+    		final PicoContainer scope) {
+        final Map<ComponentAdapter<T>, T> adapterToInstanceMap = new HashMap<ComponentAdapter<T>, T>();
         synchronized (this) {
             for (ComponentAdapter<?> componentAdapter : getModifiableComponentAdapterList()) {
                 if (componentType.isAssignableFrom(componentAdapter.getComponentImplementation())) {
                     ComponentAdapter<T> typedComponentAdapter = (ComponentAdapter<T>) componentAdapter;
-                    T componentInstance = getLocalInstance(typedComponentAdapter);
+                    final T componentInstance = typedComponentAdapter.getComponentInstance(scope, ComponentAdapter.NOTHING.class);
+                    addOrderedComponentAdapter(typedComponentAdapter);
                     adapterToInstanceMap.put(typedComponentAdapter, componentInstance);
                 }
             }
@@ -727,6 +726,18 @@ public class DefaultPicoContainer implements MutablePicoContainer, Converting, C
                 }
             }
         }
+    	if(defaultParent != null) {
+    		defaultParent.getLocalComponents(componentType, result, scope);
+    	}
+    }
+    
+    public <T> List<T> getComponents(final Class<T> componentType) {
+        if (componentType == null) {
+            return Collections.emptyList();
+        }
+
+        final ArrayList<T> result = new ArrayList<T>();
+        getLocalComponents(componentType, result, this);
         return result;
     }
 

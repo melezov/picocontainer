@@ -18,6 +18,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.picocontainer.Key.annotatedKey;
+import java.util.List;
 
 public class TieringPicoContainerTestCase {
 
@@ -230,4 +231,22 @@ public class TieringPicoContainerTestCase {
 
       	assertEquals(C3.class, c3.getClass());
       }
+      
+      @Test public void testScopeArrayResolution() {
+
+      	DefaultPicoContainer container = new DefaultPicoContainer();
+      	container.addComponent(A.class);
+      	container.addComponent(new B("root"));
+
+      	final List<A> a1 = container.getComponents(A.class);
+      	assertEquals(1, a1.size());
+
+      	MutablePicoContainer scope = container.makeChildContainer();
+      	scope.addComponent(new B("child"));
+
+      	final List<A> a2 = scope.getComponents(A.class);
+
+      	assertEquals(1, a2.size());
+      	assertEquals("child", a2.get(0).b.name);
+      }      
 }

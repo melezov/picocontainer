@@ -248,5 +248,19 @@ public class TieringPicoContainerTestCase {
 
       	assertEquals(1, a2.size());
       	assertEquals("child", a2.get(0).b.name);
-      }      
+      }
+      
+      @Test public void allowDuplicatesUseLast() {
+
+        	DefaultPicoContainer container = new DefaultPicoContainer();
+        	container.addComponent(new B("1"));
+        	container.addComponent(new B("2"));
+
+        	final List<B> bs = container.getComponents(B.class);
+        	assertEquals(2, bs.size());
+        	
+        	final B bLast = container.getComponent(B.class);
+        	assertEquals("2", bLast.name);
+        }
+      
 }

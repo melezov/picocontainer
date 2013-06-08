@@ -495,9 +495,9 @@ public class DefaultPicoContainer implements MutablePicoContainer, Converting, C
 
     protected MutablePicoContainer addAdapterInternal(ComponentAdapter<?> componentAdapter) {
         Object key = componentAdapter.getComponentKey();
-        if (getComponentKeyToAdapterCache().containsKey(key)) {
-            throw new PicoCompositionException("Duplicate Keys not allowed. Duplicate for '" + key + "'");
-        }
+        //if (getComponentKeyToAdapterCache().containsKey(key)) {
+        //    throw new PicoCompositionException("Duplicate Keys not allowed. Duplicate for '" + key + "'");
+        //}
         getModifiableComponentAdapterList().add(componentAdapter);
         getComponentKeyToAdapterCache().put(key, componentAdapter);
         return this;
